@@ -296,8 +296,46 @@ def reinforce_episode(theta, alpha, gamma, rng, max_steps=10000):
 
     return theta, float(np.sum(rewards))
 
-# Step 17 - reinforce_baseline_episode (not yet solved)
-# TODO: implement
+# Step 17 - reinforce_baseline_episode
+import numpy as np
+
+
+def reinforce_baseline_episode(theta, w, alpha_theta, alpha_w, gamma, rng, max_steps=10000):
+    theta = np.array(theta, dtype=float)  # copy, don't mutate caller's array
+    w = float(w)
+
+    state = 0
+    actions = []
+    rewards = []
+    done = False
+
+    while not done and len(actions) < max_steps:
+        probs = corridor_policy(theta)
+        action = int(rng.choice(2, p=probs))
+        next_state, reward, done = corridor_step(state, action)
+        actions.append(action)
+        rewards.append(reward)
+        state = next_state
+
+    T = len(actions)
+
+    # Backward pass: G_t = R_t + gamma * G_{t+1}
+    returns = np.zeros(T)
+    g = 0.0
+    for t in range(T - 1, -1, -1):
+        g = rewards[t] + gamma * g
+        returns[t] = g
+
+    # Forward pass: baseline update first, then policy update with the advantage delta
+    for t in range(T):
+        delta = float(returns[t]) - w
+        w += alpha_w * delta
+        probs = corridor_policy(theta)
+        grad = -probs.copy()
+        grad[actions[t]] += 1.0
+        theta = theta + alpha_theta * (gamma ** t) * delta * grad
+
+    return theta, float(w), float(np.sum(rewards))
 
 # Step 18 - actor_critic_corridor_episode (not yet solved)
 # TODO: implement
