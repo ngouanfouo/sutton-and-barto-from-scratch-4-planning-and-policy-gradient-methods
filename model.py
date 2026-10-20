@@ -190,8 +190,43 @@ def push_priority(queue, q_table, state, action, reward, next_state, gamma, thet
         heapq.heappush(queue, (-float(priority), tuple(state), int(action)))
     return queue
 
-# Step 12 - prioritized_sweeping_episode (not yet solved)
-# TODO: implement
+# Step 12 - prioritized_sweeping_episode
+import numpy as np
+import heapq
+
+
+def prioritized_sweeping_episode(maze, q_table, model, n_planning, theta, alpha, gamma, epsilon, rng):
+    model = dict(model)
+    queue = []
+    state = maze['start']
+    n_steps = 0
+    n_updates = 0
+    done = False
+
+    while not done:
+        action = epsilon_greedy_tabular(q_table, state, epsilon, rng)
+        next_state, reward, done = maze_step(maze, state, action)
+
+        # Real experience only feeds the model and the priority queue.
+        model[(state, action)] = (next_state, reward)
+        push_priority(queue, q_table, state, action, reward, next_state, gamma, theta)
+
+        # Planning: focused backward wave of up to n_planning backups.
+        for _ in range(n_planning):
+            if not queue:
+                break
+            _, s, a = heapq.heappop(queue)
+            s_next, r = model[(s, a)]
+            q_table = q_learning_update(q_table, s, a, r, s_next, alpha, gamma)
+            n_updates += 1
+            for (ps, pa), (pn, pr) in model.items():
+                if pn == s:
+                    push_priority(queue, q_table, ps, pa, pr, s, gamma, theta)
+
+        state = next_state
+        n_steps += 1
+
+    return q_table, model, n_steps, n_updates
 
 # Step 13 - corridor_step (not yet solved)
 # TODO: implement
