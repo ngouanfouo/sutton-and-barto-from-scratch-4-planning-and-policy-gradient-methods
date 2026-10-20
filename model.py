@@ -228,8 +228,15 @@ def prioritized_sweeping_episode(maze, q_table, model, n_planning, theta, alpha,
 
     return q_table, model, n_steps, n_updates
 
-# Step 13 - corridor_step (not yet solved)
-# TODO: implement
+# Step 13 - corridor_step
+def corridor_step(state, action):
+    if state == 1:
+        action = 1 - action
+    if action == 0:
+        next_state = max(state - 1, 0)
+    else:
+        next_state = state + 1
+    return next_state, -1.0, next_state == 3
 
 # Step 14 - corridor_policy (not yet solved)
 # TODO: implement
