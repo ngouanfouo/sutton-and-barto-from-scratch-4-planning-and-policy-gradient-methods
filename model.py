@@ -406,8 +406,33 @@ def differential_sarsa_update(q_table, avg_reward, state, action, reward, next_s
 
     return new_table, float(avg_reward)
 
-# Step 21 - run_access_control (not yet solved)
-# TODO: implement
+# Step 21 - run_access_control
+import numpy as np
+
+
+def run_access_control(n_steps, alpha, beta, epsilon, rng, n_servers=10, free_prob=0.06):
+    q_table = np.zeros((n_servers + 1, 4, 2))
+    avg_reward = 0.0
+
+    state = (n_servers, int(rng.integers(0, 4)))
+
+    def choose_action(s):
+        if s[0] == 0:
+            return 0
+        return epsilon_greedy_tabular(q_table, s, epsilon, rng)
+
+    action = choose_action(state)
+
+    for _ in range(n_steps):
+        next_state, reward = access_control_step(state, action, rng, n_servers, free_prob)
+        next_action = choose_action(next_state)
+        q_table, avg_reward = differential_sarsa_update(
+            q_table, avg_reward, state, action, reward, next_state, next_action, alpha, beta
+        )
+        state = next_state
+        action = next_action
+
+    return q_table, avg_reward
 
 # Step 22 - access_control_policy_table (not yet solved)
 # TODO: implement
