@@ -374,8 +374,24 @@ def actor_critic_corridor_episode(theta, w, alpha_theta, alpha_w, gamma, rng, ma
 
     return theta, w, float(total)
 
-# Step 19 - access_control_step (not yet solved)
-# TODO: implement
+# Step 19 - access_control_step
+import numpy as np
+
+
+def access_control_step(state, action, rng, n_servers=10, free_prob=0.06):
+    priorities = (1.0, 2.0, 4.0, 8.0)
+    free, prio = state
+
+    reward = 0.0
+    if action == 1 and free > 0:
+        reward = priorities[prio]
+        free -= 1
+
+    # Busy servers finish independently; draw after the acceptance.
+    free += int(rng.binomial(n_servers - free, free_prob))
+
+    next_prio = int(rng.integers(0, 4))
+    return (int(free), next_prio), reward
 
 # Step 20 - differential_sarsa_update (not yet solved)
 # TODO: implement
