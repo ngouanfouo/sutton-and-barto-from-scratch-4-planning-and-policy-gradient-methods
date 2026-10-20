@@ -238,8 +238,15 @@ def corridor_step(state, action):
         next_state = state + 1
     return next_state, -1.0, next_state == 3
 
-# Step 14 - corridor_policy (not yet solved)
-# TODO: implement
+# Step 14 - corridor_policy
+import numpy as np
+
+
+def corridor_policy(theta):
+    theta = np.asarray(theta, dtype=float)
+    shifted = theta - np.max(theta)
+    exp_theta = np.exp(shifted)
+    return exp_theta / np.sum(exp_theta)
 
 # Step 15 - corridor_true_value (not yet solved)
 # TODO: implement
