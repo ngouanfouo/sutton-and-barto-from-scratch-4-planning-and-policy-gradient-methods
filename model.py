@@ -96,8 +96,18 @@ def dyna_q_episode(maze, q_table, model, n_planning, alpha, gamma, epsilon, rng)
 
     return q_table, model, n_steps
 
-# Step 7 - greedy_path_length (not yet solved)
-# TODO: implement
+# Step 7 - greedy_path_length
+import numpy as np
+
+
+def greedy_path_length(maze, q_table, max_steps=100):
+    state = maze['start']
+    for step in range(1, max_steps + 1):
+        action = int(np.argmax(q_table[state]))
+        state, reward, done = maze_step(maze, state, action)
+        if done:
+            return step
+    return max_steps
 
 # Step 8 - update_model_plus (not yet solved)
 # TODO: implement
