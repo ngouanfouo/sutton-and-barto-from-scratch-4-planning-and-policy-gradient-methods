@@ -248,8 +248,9 @@ def corridor_policy(theta):
     exp_theta = np.exp(shifted)
     return exp_theta / np.sum(exp_theta)
 
-# Step 15 - corridor_true_value (not yet solved)
-# TODO: implement
+# Step 15 - corridor_true_value
+def corridor_true_value(p_right):
+    return float(-2.0 * (2.0 - p_right) / (p_right * (1.0 - p_right)))
 
 # Step 16 - reinforce_episode (not yet solved)
 # TODO: implement
