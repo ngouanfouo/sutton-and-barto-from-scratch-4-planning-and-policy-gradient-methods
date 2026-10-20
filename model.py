@@ -49,8 +49,15 @@ def epsilon_greedy_tabular(q_table, state, epsilon, rng):
     candidates = np.flatnonzero(values == values.max())
     return int(rng.choice(candidates))
 
-# Step 4 - q_learning_update (not yet solved)
-# TODO: implement
+# Step 4 - q_learning_update
+import numpy as np
+
+
+def q_learning_update(q_table, state, action, reward, next_state, alpha, gamma):
+    new_table = q_table.copy()
+    target = reward + gamma * np.max(q_table[next_state])
+    new_table[state][action] += alpha * (target - q_table[state][action])
+    return new_table
 
 # Step 5 - planning_updates (not yet solved)
 # TODO: implement
