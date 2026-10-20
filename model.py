@@ -35,8 +35,19 @@ def maze_step(maze, state, action):
     reward = 1.0 if done else 0.0
     return next_state, reward, done
 
-# Step 3 - epsilon_greedy_tabular (not yet solved)
-# TODO: implement
+# Step 3 - epsilon_greedy_tabular
+import numpy as np
+
+
+def epsilon_greedy_tabular(q_table, state, epsilon, rng):
+    values = q_table[state]
+    n_actions = len(values)
+
+    if rng.random() < epsilon:
+        return int(rng.integers(0, n_actions))
+
+    candidates = np.flatnonzero(values == values.max())
+    return int(rng.choice(candidates))
 
 # Step 4 - q_learning_update (not yet solved)
 # TODO: implement
