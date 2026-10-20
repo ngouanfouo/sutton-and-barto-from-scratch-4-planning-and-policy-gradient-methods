@@ -434,6 +434,16 @@ def run_access_control(n_steps, alpha, beta, epsilon, rng, n_servers=10, free_pr
 
     return q_table, avg_reward
 
-# Step 22 - access_control_policy_table (not yet solved)
-# TODO: implement
+# Step 22 - access_control_policy_table
+import numpy as np
+
+
+def access_control_policy_table(q_table):
+    n_free, n_prio, _ = q_table.shape
+    table = np.zeros((n_prio, n_free), dtype=int)
+    for free in range(1, n_free):
+        for prio in range(n_prio):
+            if q_table[free, prio, 1] > q_table[free, prio, 0]:
+                table[prio, free] = 1
+    return table
 
