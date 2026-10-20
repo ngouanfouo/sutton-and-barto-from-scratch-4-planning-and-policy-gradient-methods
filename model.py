@@ -59,8 +59,21 @@ def q_learning_update(q_table, state, action, reward, next_state, alpha, gamma):
     new_table[state][action] += alpha * (target - q_table[state][action])
     return new_table
 
-# Step 5 - planning_updates (not yet solved)
-# TODO: implement
+# Step 5 - planning_updates
+import numpy as np
+
+
+def planning_updates(q_table, model, n_planning, alpha, gamma, rng):
+    keys = list(model.keys())
+    if not keys or n_planning <= 0:
+        return q_table.copy()
+
+    indices = rng.integers(0, len(keys), size=n_planning)
+    for i in indices:
+        state, action = keys[i]
+        next_state, reward = model[(state, action)]
+        q_table = q_learning_update(q_table, state, action, reward, next_state, alpha, gamma)
+    return q_table
 
 # Step 6 - dyna_q_episode (not yet solved)
 # TODO: implement
