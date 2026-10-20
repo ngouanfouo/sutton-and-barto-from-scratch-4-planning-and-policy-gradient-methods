@@ -109,8 +109,13 @@ def greedy_path_length(maze, q_table, max_steps=100):
             return step
     return max_steps
 
-# Step 8 - update_model_plus (not yet solved)
-# TODO: implement
+# Step 8 - update_model_plus
+def update_model_plus(model, state, action, next_state, reward, time, n_actions=4):
+    new_model = dict(model)
+    for a in range(n_actions):
+        new_model.setdefault((state, a), (state, 0.0, 0))
+    new_model[(state, action)] = (next_state, reward, time)
+    return new_model
 
 # Step 9 - dyna_q_plus_planning (not yet solved)
 # TODO: implement
