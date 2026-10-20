@@ -75,8 +75,26 @@ def planning_updates(q_table, model, n_planning, alpha, gamma, rng):
         q_table = q_learning_update(q_table, state, action, reward, next_state, alpha, gamma)
     return q_table
 
-# Step 6 - dyna_q_episode (not yet solved)
-# TODO: implement
+# Step 6 - dyna_q_episode
+import numpy as np
+
+
+def dyna_q_episode(maze, q_table, model, n_planning, alpha, gamma, epsilon, rng):
+    model = dict(model)
+    state = maze['start']
+    n_steps = 0
+    done = False
+
+    while not done:
+        action = epsilon_greedy_tabular(q_table, state, epsilon, rng)
+        next_state, reward, done = maze_step(maze, state, action)
+        q_table = q_learning_update(q_table, state, action, reward, next_state, alpha, gamma)
+        model[(state, action)] = (next_state, reward)
+        q_table = planning_updates(q_table, model, n_planning, alpha, gamma, rng)
+        state = next_state
+        n_steps += 1
+
+    return q_table, model, n_steps
 
 # Step 7 - greedy_path_length (not yet solved)
 # TODO: implement
