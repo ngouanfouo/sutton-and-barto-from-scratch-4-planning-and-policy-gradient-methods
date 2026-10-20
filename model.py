@@ -393,8 +393,18 @@ def access_control_step(state, action, rng, n_servers=10, free_prob=0.06):
     next_prio = int(rng.integers(0, 4))
     return (int(free), next_prio), reward
 
-# Step 20 - differential_sarsa_update (not yet solved)
-# TODO: implement
+# Step 20 - differential_sarsa_update
+import numpy as np
+
+
+def differential_sarsa_update(q_table, avg_reward, state, action, reward, next_state, next_action, alpha, beta):
+    new_table = q_table.copy()
+
+    delta = reward - avg_reward + q_table[next_state][next_action] - q_table[state][action]
+    avg_reward = avg_reward + beta * delta
+    new_table[state][action] += alpha * delta
+
+    return new_table, float(avg_reward)
 
 # Step 21 - run_access_control (not yet solved)
 # TODO: implement
