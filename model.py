@@ -19,8 +19,21 @@ def build_maze(walls=None, start=(2, 0), goal=(0, 8), rows=6, cols=9):
         'n_actions': 4,
     }
 
-# Step 2 - maze_step (not yet solved)
-# TODO: implement
+# Step 2 - maze_step
+def maze_step(maze, state, action):
+    deltas = {0: (-1, 0), 1: (0, 1), 2: (1, 0), 3: (0, -1)}
+    dr, dc = deltas[action]
+    r, c = state
+    nr, nc = r + dr, c + dc
+
+    # Bump into a wall or the grid boundary: stay put.
+    if not (0 <= nr < maze['rows'] and 0 <= nc < maze['cols']) or (nr, nc) in maze['walls']:
+        nr, nc = r, c
+
+    next_state = (nr, nc)
+    done = next_state == maze['goal']
+    reward = 1.0 if done else 0.0
+    return next_state, reward, done
 
 # Step 3 - epsilon_greedy_tabular (not yet solved)
 # TODO: implement
