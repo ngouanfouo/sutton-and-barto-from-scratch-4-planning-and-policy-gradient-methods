@@ -117,8 +117,22 @@ def update_model_plus(model, state, action, next_state, reward, time, n_actions=
     new_model[(state, action)] = (next_state, reward, time)
     return new_model
 
-# Step 9 - dyna_q_plus_planning (not yet solved)
-# TODO: implement
+# Step 9 - dyna_q_plus_planning
+import numpy as np
+
+
+def dyna_q_plus_planning(q_table, model, n_planning, time, kappa, alpha, gamma, rng):
+    keys = list(model.keys())
+    if not keys or n_planning <= 0:
+        return q_table.copy()
+
+    indices = rng.integers(0, len(keys), size=n_planning)
+    for i in indices:
+        state, action = keys[i]
+        next_state, reward, last_time = model[(state, action)]
+        bonus = kappa * np.sqrt(time - last_time)
+        q_table = q_learning_update(q_table, state, action, reward + bonus, next_state, alpha, gamma)
+    return q_table
 
 # Step 10 - run_blocking_maze (not yet solved)
 # TODO: implement
