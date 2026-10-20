@@ -337,8 +337,42 @@ def reinforce_baseline_episode(theta, w, alpha_theta, alpha_w, gamma, rng, max_s
 
     return theta, float(w), float(np.sum(rewards))
 
-# Step 18 - actor_critic_corridor_episode (not yet solved)
-# TODO: implement
+# Step 18 - actor_critic_corridor_episode
+import numpy as np
+
+
+def actor_critic_corridor_episode(theta, w, alpha_theta, alpha_w, gamma, rng, max_steps=10000):
+    theta = np.array(theta, dtype=float)
+    w = np.array(w, dtype=float)
+
+    state = 0
+    discount = 1.0
+    total = 0.0
+    n_steps = 0
+    done = False
+
+    while not done and n_steps < max_steps:
+        probs = corridor_policy(theta)
+        action = int(rng.choice(2, p=probs))
+        next_state, reward, done = corridor_step(state, action)
+
+        # One-step TD error; terminal state has value 0.
+        delta = reward + gamma * (0.0 if done else w[next_state]) - w[state]
+
+        # Critic update on the current state's entry.
+        w[state] += alpha_w * delta
+
+        # Actor update with the score of the taken action.
+        grad = -probs.copy()
+        grad[action] += 1.0
+        theta = theta + alpha_theta * discount * delta * grad
+
+        discount *= gamma
+        total += reward
+        state = next_state
+        n_steps += 1
+
+    return theta, w, float(total)
 
 # Step 19 - access_control_step (not yet solved)
 # TODO: implement
